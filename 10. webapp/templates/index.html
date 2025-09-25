@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <!-- 할 일 추가 폼 -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-plus-circle me-2"></i>새로운 할 일 추가
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="taskForm">
+                    <div class="mb-3">
+                        <label for="taskName" class="form-label">할 일 이름</label>
+                        <input type="text" class="form-control" id="taskName" required 
+                               placeholder="예: 프로젝트 보고서 작성">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="priority" class="form-label">우선순위</label>
+                        <select class="form-select" id="priority" required>
+                            <option value="">우선순위를 선택하세요</option>
+                            <option value="1">🔥 매우 중요 (1)</option>
+                            <option value="2">⚡ 중요 (2)</option>
+                            <option value="3">📝 보통 (3)</option>
+                            <option value="4">⏰ 낮음 (4)</option>
+                            <option value="5">📋 매우 낮음 (5)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">예상 소요 시간</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <select class="form-select" id="durationHours" required>
+                                    <option value="">시간</option>
+                                    <option value="0">0시간</option>
+                                    <option value="1">1시간</option>
+                                    <option value="2">2시간</option>
+                                    <option value="3">3시간</option>
+                                    <option value="4">4시간</option>
+                                    <option value="5">5시간</option>
+                                    <option value="6">6시간</option>
+                                    <option value="7">7시간</option>
+                                    <option value="8">8시간</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <select class="form-select" id="durationMinutes" required>
+                                    <option value="">분</option>
+                                    <option value="0">0분</option>
+                                    <option value="15">15분</option>
+                                    <option value="30">30분</option>
+                                    <option value="45">45분</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">시작 예정 시간</label>
+                        <div class="row">
+                            <div class="col-6">
+                                <select class="form-select" id="startHour" required>
+                                    <option value="">시간</option>
+                                    <option value="06">06시</option>
+                                    <option value="07">07시</option>
+                                    <option value="08">08시</option>
+                                    <option value="09">09시</option>
+                                    <option value="10">10시</option>
+                                    <option value="11">11시</option>
+                                    <option value="12">12시</option>
+                                    <option value="13">13시</option>
+                                    <option value="14">14시</option>
+                                    <option value="15">15시</option>
+                                    <option value="16">16시</option>
+                                    <option value="17">17시</option>
+                                    <option value="18">18시</option>
+                                    <option value="19">19시</option>
+                                    <option value="20">20시</option>
+                                    <option value="21">21시</option>
+                                    <option value="22">22시</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <select class="form-select" id="startMinute" required>
+                                    <option value="">분</option>
+                                    <option value="00">00분</option>
+                                    <option value="15">15분</option>
+                                    <option value="30">30분</option>
+                                    <option value="45">45분</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="category" class="form-label">카테고리</label>
+                        <select class="form-select" id="category">
+                            <option value="숙제">숙제</option>
+                            <option value="운동">운동</option>
+                            <option value="약속">약속</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-plus me-2"></i>할 일 추가
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 할 일 목록 -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>할 일 목록
+                    <span class="badge bg-light text-dark ms-2" id="taskCount">0</span>
+                </h5>
+            </div>
+            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                <div id="taskList">
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-clipboard-list fa-3x mb-3"></i>
+                        <p>아직 추가된 할 일이 없습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI 일정 및 조언 -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-brain me-2"></i>AI 일정 분석
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="scheduleSection">
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-calendar-alt fa-3x mb-3"></i>
+                        <p>일정을 생성하려면 할 일을 추가한 후<br>"일정 생성" 버튼을 클릭하세요.</p>
+                        <button class="btn btn-success" onclick="generateSchedule()">
+                            <i class="fas fa-magic me-2"></i>AI 일정 생성
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 데이터 시각화 섹션 -->
+<div class="row mt-4" id="visualizationSection" style="display: none;">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>데이터 분석 및 시각화
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div id="priorityChart"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div id="categoryChart"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div id="timeChart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 조언 섹션 -->
+<div class="row mt-4" id="adviceSection" style="display: none;">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-lightbulb me-2"></i>AI 조언
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="adviceList"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 알림 토스트 -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <i class="fas fa-bell text-primary me-2"></i>
+            <strong class="me-auto">알림</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body" id="toastMessage">
+            메시지가 여기에 표시됩니다.
+        </div>
+    </div>
+</div>
+{% endblock %}
