@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}VibeTube{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="header__left">
+        <button class="icon-button" id="menuButton" aria-label="menu">☰</button>
+        <a class="logo" href="{{ url_for('home') }}">VibeTube</a>
+      </div>
+      <form class="search" action="{{ url_for('home') }}" method="get">
+        <input name="q" type="text" placeholder="검색" value="{{ query|default('') }}" />
+        <button class="primary" type="submit">검색</button>
+      </form>
+      <div class="header__right">
+        <button class="icon-button" aria-label="notifications">🔔</button>
+        <div class="avatar" title="You">Y</div>
+      </div>
+    </header>
+
+    <div class="container">
+      <aside class="sidebar" id="sidebar">
+        <nav>
+          <a href="{{ url_for('home') }}" class="nav-item">홈</a>
+          <a href="#" class="nav-item">인기</a>
+          <a href="#" class="nav-item">구독</a>
+          <a href="#" class="nav-item">보관함</a>
+        </nav>
+      </aside>
+      <main class="content">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+  </html>
+
+

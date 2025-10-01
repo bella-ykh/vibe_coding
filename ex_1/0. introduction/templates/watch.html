@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}{{ video.title }} - VibeTube{% endblock %}
+{% block content %}
+<section class="watch">
+  <div class="player">
+    <video controls preload="metadata" src="{{ video.video_url }}"></video>
+  </div>
+  <h1 class="watch__title">{{ video.title }}</h1>
+  <div class="watch__meta">{{ video.channel }} • {{ video.views_display }} • {{ video.published }}</div>
+  <p class="watch__desc">{{ video.description }}</p>
+
+  <h2 class="section-title">추천 동영상</h2>
+  <div class="recommendations">
+    {% for r in recommendations %}
+    <a class="rec-item" href="{{ url_for('watch', video_id=r.id) }}">
+      <img src="{{ r.thumbnail_url }}" alt="{{ r.title }}" loading="lazy" />
+      <div class="rec-text">
+        <div class="rec-title" title="{{ r.title }}">{{ r.title }}</div>
+        <div class="rec-sub">{{ r.channel }} • {{ r.views_display }}</div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+
+

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>초등 한국사 영상 모음</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🏛️ 초등 한국사 영상 모음 📚</h1>
+        
+        <div class="tabs">
+            <button class="tab-button active" data-tab="prehistoric">선사시대</button>
+            <button class="tab-button" data-tab="threekingdoms">삼국시대</button>
+            <button class="tab-button" data-tab="laterthree">후삼국</button>
+            <button class="tab-button" data-tab="unifiedsilla">통일신라</button>
+            <button class="tab-button" data-tab="goryeo">고려</button>
+            <button class="tab-button" data-tab="joseon">조선</button>
+            <button class="tab-button" data-tab="modern">근현대</button>
+        </div>
+        
+        <div id="prehistoric" class="content-section active">
+            <div class="section-title">🦴 선사시대</div>
+            <div class="video-grid"></div>
+        </div>
+        
+        <div id="threekingdoms" class="content-section">
+            <div class="section-title">🏺 삼국시대</div>
+            <div class="video-grid"></div>
+        </div>
+        
+        <div id="laterthree" class="content-section">
+            <div class="section-title">⚔️ 후삼국</div>
+            <div class="video-grid"></div>
+        </div>
+        
+        <div id="unifiedsilla" class="content-section">
+            <div class="section-title">🌟 통일신라</div>
+            <div class="video-grid"></div>
+        </div>
+        
+        <div id="goryeo" class="content-section">
+            <div class="section-title">👑 고려</div>
+            <div class="video-grid"></div>
+        </div>
+        
+        <div id="joseon" class="content-section">
+            <div class="section-title">📜 조선</div>
+            <div class="video-grid"></div>
+        </div>
+        
+        <div id="modern" class="content-section">
+            <div class="section-title">🗽 근현대</div>
+            <div class="video-grid"></div>
+        </div>
+    </div>
+    
+    <!-- 모달 팝업 -->
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
+            <button class="close-button">✕</button>
+            <iframe id="modalIframe" src="" allowfullscreen allow="autoplay"></iframe>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

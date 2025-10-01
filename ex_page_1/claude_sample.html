@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>초등 한국사 영상 모음</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            animation: fadeInDown 0.8s ease;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease;
+        }
+        
+        .tab-button {
+            padding: 15px 30px;
+            background: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .tab-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+        }
+        
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: slideUp 0.5s ease;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 20px;
+            border: 4px solid #f5576c;
+        }
+        
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .video-card {
+            background: #f8f9ff;
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+        
+        .video-card h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 15px;
+            cursor: pointer;
+            background: #e0e0e0;
+        }
+        
+        .video-wrapper img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70px;
+            height: 70px;
+            background: rgba(245, 87, 108, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+        
+        .play-button::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 20px solid white;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            margin-left: 5px;
+        }
+        
+        .video-wrapper:hover .play-button {
+            transform: translate(-50%, -50%) scale(1.1);
+            background: rgba(245, 87, 108, 1);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 1200px;
+            aspect-ratio: 16/9;
+            animation: zoomIn 0.3s ease;
+        }
+        
+        .modal-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 10px;
+        }
+        
+        .close-button {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            color: #764ba2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .close-button:hover {
+            transform: rotate(90deg);
+            background: #f5576c;
+            color: white;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .tab-button {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+            
+            .content-section {
+                padding: 25px;
+            }
+            
+            .section-title {
+                font-size: 1.5em;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                width: 95%;
+            }
+            
+            .close-button {
+                top: -45px;
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏛️ 초등 한국사 영상 모음 📚</h1>
+        
+        <div class="tabs">
+            <button class="tab-button active" data-tab="prehistoric">선사시대</button>
+            <button class="tab-button" data-tab="threekingdoms">삼국시대</button>
+            <button class="tab-button" data-tab="laterthree">후삼국</button>
+            <button class="tab-button" data-tab="unifiedsilla">통일신라</button>
+            <button class="tab-button" data-tab="goryeo">고려</button>
+            <button class="tab-button" data-tab="joseon">조선</button>
+            <button class="tab-button" data-tab="modern">근현대</button>
+        </div>
+        
+        <div id="prehistoric" class="content-section active">
+            <div class="section-title">🦴 선사시대</div>
+            <div class="video-grid">
+                <div class="video-card">
+                    <h3>구석기와 신석기</h3>
+                    <div class="video-wrapper" data-video-id="k5RvePALKVk">
+                        <img src="https://img.youtube.com/vi/k5RvePALKVk/maxresdefault.jpg" alt="구석기와 신석기">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <h3>고조선 단군이야기</h3>
+                    <div class="video-wrapper" data-video-id="dajNcGW2w7s">
+                        <img src="https://img.youtube.com/vi/dajNcGW2w7s/maxresdefault.jpg" alt="고조선 단군이야기">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <h3>청동기와 고조선의 건국</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_3">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_3/maxresdefault.jpg" alt="청동기와 고조선의 건국">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="threekingdoms" class="content-section">
+            <div class="section-title">🏺 삼국시대</div>
+            <div class="video-grid">
+                <div class="video-card">
+                    <h3>고구려의 역사</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_4">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_4/maxresdefault.jpg" alt="고구려의 역사">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <h3>백제의 문화와 발전</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_5">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_5/maxresdefault.jpg" alt="백제의 문화와 발전">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <h3>신라의 성장</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_6">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_6/maxresdefault.jpg" alt="신라의 성장">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="laterthree" class="content-section">
+            <div class="section-title">⚔️ 후삼국</div>
+            <div class="video-grid">
+                <div class="video-card">
+                    <h3>후삼국의 성립</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_7">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_7/maxresdefault.jpg" alt="후삼국의 성립">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <h3>후백제와 견훤</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_8">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_8/maxresdefault.jpg" alt="후백제와 견훤">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <h3>후고구려와 궁예</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_9">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_9/maxresdefault.jpg" alt="후고구려와 궁예">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="unifiedsilla" class="content-section">
+            <div class="section-title">🌟 통일신라</div>
+            <div class="video-grid">
+                <div class="video-card">
+                    <h3>삼국통일의 과정</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_10">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_10/maxresdefault.jpg" alt="삼국통일의 과정">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <h3>통일신라의 문화</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_11">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_11/maxresdefault.jpg" alt="통일신라의 문화">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <h3>불국사와 석굴암</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_12">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_12/maxresdefault.jpg" alt="불국사와 석굴암">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="goryeo" class="content-section">
+            <div class="section-title">👑 고려</div>
+            <div class="video-grid">
+                <div class="video-card">
+                    <h3>고려의 건국과 후삼국 통일</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_13">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_13/maxresdefault.jpg" alt="고려의 건국과 후삼국 통일">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <h3>팔만대장경과 금속활자</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_14">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_14/maxresdefault.jpg" alt="팔만대장경과 금속활자">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <h3>몽골의 침략과 고려의 저항</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_15">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_15/maxresdefault.jpg" alt="몽골의 침략과 고려의 저항">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="joseon" class="content-section">
+            <div class="section-title">📜 조선</div>
+            <div class="video-grid">
+                <div class="video-card">
+                    <h3>조선의 건국과 한양 천도</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_16">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_16/maxresdefault.jpg" alt="조선의 건국과 한양 천도">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <h3>세종대왕과 한글 창제</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_17">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_17/maxresdefault.jpg" alt="세종대왕과 한글 창제">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <h3>임진왜란과 이순신 장군</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_18">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_18/maxresdefault.jpg" alt="임진왜란과 이순신 장군">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="modern" class="content-section">
+            <div class="section-title">🗽 근현대</div>
+            <div class="video-grid">
+                <div class="video-card">
+                    <h3>개항과 근대화</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_19">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_19/maxresdefault.jpg" alt="개항과 근대화">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <h3>독립운동과 3.1운동</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_20">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_20/maxresdefault.jpg" alt="독립운동과 3.1운동">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+                <div class="video-card">
+                    <h3>대한민국의 발전</h3>
+                    <div class="video-wrapper" data-video-id="VIDEO_ID_21">
+                        <img src="https://img.youtube.com/vi/VIDEO_ID_21/maxresdefault.jpg" alt="대한민국의 발전">
+                        <div class="play-button"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 모달 팝업 -->
+    <div id="videoModal" class="modal">
+        <div class="modal-content">
+            <button class="close-button">✕</button>
+            <iframe id="modalIframe" src="" allowfullscreen allow="autoplay"></iframe>
+        </div>
+    </div>
+    
+    <script>
+        // 탭 전환 기능
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const contentSections = document.querySelectorAll('.content-section');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.dataset.tab;
+                
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === targetTab) {
+                        section.classList.add('active');
+                    }
+                });
+            });
+        });
+        
+        // 비디오 팝업 기능
+        const modal = document.getElementById('videoModal');
+        const modalIframe = document.getElementById('modalIframe');
+        const closeButton = document.querySelector('.close-button');
+        const videoWrappers = document.querySelectorAll('.video-wrapper');
+        
+        videoWrappers.forEach(wrapper => {
+            wrapper.addEventListener('click', () => {
+                const videoId = wrapper.dataset.videoId;
+                modalIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+        
+        // 모달 닫기
+        function closeModal() {
+            modal.classList.remove('active');
+            modalIframe.src = '';
+            document.body.style.overflow = 'auto';
+        }
+        
+        closeButton.addEventListener('click', closeModal);
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

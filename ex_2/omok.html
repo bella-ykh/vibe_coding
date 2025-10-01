@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>오목 (교차점에 놓기)</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans KR, sans-serif;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      margin: 20px;
+    }
+    #wrap { position: relative; }
+    #status { font-weight: 700; }
+    #controls { display: flex; gap: 8px; }
+    button { padding: 6px 10px; border: 1px solid #bbb; background: #fff; cursor: pointer; border-radius: 6px; }
+    button:hover { background: #f4f4f4; }
+    canvas { display: block; background: #f5d68f; border: 2px solid #000; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>오목 게임</h1>
+  <div id="wrap">
+    <canvas id="board" width="520" height="520"></canvas>
+  </div>
+  <div id="status">검은돌 차례</div>
+  <div id="controls">
+    <button id="resetBtn">다시 시작</button>
+    <button id="undoBtn">실수 취소(Undo)</button>
+  </div>
+
+  <script>
+    // --- 설정 ---
+    const size = 15;           // 선 개수(가로/세로)
+    const cell = 32;           // 격자 간격(px)
+    const margin = 30;         // 바깥 여백(첫/끝 선까지의 여백)
+    const starPts = [3, 7, 11];// 별점 위치(0-index 기준)
+    const stoneRadius = 13;    // 돌 반지름(px)
+
+    const cvs = document.getElementById('board');
+    const ctx = cvs.getContext('2d');
+    const statusEl = document.getElementById('status');
+    const resetBtn = document.getElementById('resetBtn');
+    const undoBtn = document.getElementById('undoBtn');
+
+    // 내부 상태
+    let board = Array.from({ length: size }, () => Array(size).fill(null)); // null | 'black' | 'white'
+    let currentPlayer = 'black';
+    let gameOver = false;
+    let history = []; // [{x,y,player}...]
+
+    // --- 보드 그리기 ---
+    function drawBoard() {
+      ctx.clearRect(0, 0, cvs.width, cvs.height);
+
+      // 바탕 색은 CSS에서 처리, 여기선 그리드만
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#000';
+
+      // 격자 선
+      for (let i = 0; i < size; i++) {
+        // 가로선
+        const y = margin + i * cell;
+        ctx.beginPath();
+        ctx.moveTo(margin, y);
+        ctx.lineTo(margin + (size - 1) * cell, y);
+        ctx.stroke();
+
+        // 세로선
+        const x = margin + i * cell;
+        ctx.beginPath();
+        ctx.moveTo(x, margin);
+        ctx.lineTo(x, margin + (size - 1) * cell);
+        ctx.stroke();
+      }
+
+      // 별점(천원점)
+      ctx.fillStyle = '#000';
+      starPts.forEach(i => {
+        starPts.forEach(j => {
+          const cx = margin + j * cell;
+          const cy = margin + i * cell;
+          ctx.beginPath();
+          ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      });
+
+      // 돌 다시 그리기
+      for (let x = 0; x < size; x++) {
+        for (let y = 0; y < size; y++) {
+          if (board[x][y]) drawStone(x, y, board[x][y]);
+        }
+      }
+    }
+
+    function drawStone(x, y, color) {
+      const cx = margin + y * cell;
+      const cy = margin + x * cell;
+      // 테두리 그림자 느낌
+      ctx.beginPath();
+      ctx.arc(cx + 1, cy + 1, stoneRadius, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, stoneRadius, 0, Math.PI * 2);
+      if (color === 'black') {
+        ctx.fillStyle = '#000';
+        ctx.fill();
+      } else {
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#000';
+        ctx.stroke();
+      }
+    }
+
+    // --- 좌표 스냅(클릭 → 가장 가까운 교차점) ---
+    function getNearestGridCoord(clientX, clientY) {
+      const rect = cvs.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      // 바깥 여백을 기준으로 그리드 좌표로 변환 후 반올림
+      const gy = Math.round((x - margin) / cell); // 열 index
+      const gx = Math.round((y - margin) / cell); // 행 index
+
+      // 범위 체크
+      if (gx < 0 || gx >= size || gy < 0 || gy >= size) return null;
+
+      // 실제 화면 좌표(교차점)와 클릭 지점 거리로 "너무 멀면" 무시하도록 여유값
+      const px = margin + gy * cell;
+      const py = margin + gx * cell;
+      const dist = Math.hypot(px - x, py - y);
+      // 교차점에서 너무 먼 곳을 클릭하면 무시(격자 간격의 0.45배)
+      if (dist > cell * 0.45) return null;
+
+      return { x: gx, y: gy };
+    }
+
+    // --- 승리 판정 ---
+    function checkWin(x, y, player) {
+      const dirs = [
+        [1, 0],  // 세로
+        [0, 1],  // 가로
+        [1, 1],  // 대각 ↘
+        [1, -1], // 대각 ↙
+      ];
+      for (const [dx, dy] of dirs) {
+        let count = 1;
+        count += countDir(x, y, dx, dy, player);
+        count += countDir(x, y, -dx, -dy, player);
+        if (count >= 5) return true;
+      }
+      return false;
+    }
+
+    function countDir(x, y, dx, dy, player) {
+      let c = 0;
+      let nx = x + dx;
+      let ny = y + dy;
+      while (nx >= 0 && nx < size && ny >= 0 && ny < size && board[nx][ny] === player) {
+        c++;
+        nx += dx; ny += dy;
+      }
+      return c;
+    }
+
+    // --- 이벤트 ---
+    cvs.addEventListener('click', (e) => {
+      if (gameOver) return;
+      const grid = getNearestGridCoord(e.clientX, e.clientY);
+      if (!grid) return;
+
+      const { x, y } = grid; // x: 행(위→아래), y: 열(왼→오)
+      if (board[x][y]) return; // 이미 놓인 자리
+
+      board[x][y] = currentPlayer;
+      history.push({ x, y, player: currentPlayer });
+      drawBoard();
+
+      if (checkWin(x, y, currentPlayer)) {
+        statusEl.textContent = (currentPlayer === 'black' ? '검은돌' : '흰돌') + ' 승리!';
+        gameOver = true;
+        return;
+      }
+
+      currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
+      statusEl.textContent = (currentPlayer === 'black' ? '검은돌' : '흰돌') + ' 차례';
+    });
+
+    resetBtn.addEventListener('click', () => {
+      board = Array.from({ length: size }, () => Array(size).fill(null));
+      history = [];
+      currentPlayer = 'black';
+      gameOver = false;
+      statusEl.textContent = '검은돌 차례';
+      drawBoard();
+    });
+
+    undoBtn.addEventListener('click', () => {
+      if (history.length === 0 || gameOver) return;
+      const last = history.pop();
+      board[last.x][last.y] = null;
+      currentPlayer = last.player; // 방금 둔 사람이 다시 두도록
+      statusEl.textContent = (currentPlayer === 'black' ? '검은돌' : '흰돌') + ' 차례';
+      drawBoard();
+    });
+
+    // 초기 렌더
+    // 캔버스 크기 = 바깥 여백*2 + (size-1)*cell (첫/끝 선만 필요)
+    cvs.width  = margin * 2 + (size - 1) * cell;
+    cvs.height = margin * 2 + (size - 1) * cell;
+    drawBoard();
+  </script>
+</body>
+</html>

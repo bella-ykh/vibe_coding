@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>초등 한국사 시대별 유튜브 영상 모음</title>
+  <!-- Google Fonts: 둥근/가독성 좋은 한글 폰트 -->
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* 밝고 친근한 컬러 팔레트 */
+      --bg: #fffdf8;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --tab-bg: #ffffff;
+      --tab-ring: #ffd166;
+      --accent: #06d6a0;
+      --accent-2: #118ab2;
+      --accent-3: #ef476f;
+      --card: #ffffff;
+      --section-highlight: #fff3c4;
+      --shadow: 0 10px 30px rgba(0,0,0,0.08);
+      --radius-lg: 18px;
+      --radius-sm: 12px;
+      --speed: 260ms;
+    }
+
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Gowun Dodum', system-ui, -apple-system, Segoe UI, Roboto, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+      line-height: 1.5;
+    }
+
+    /* 헤더 & 탭 */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: saturate(120%) blur(8px);
+      background: color-mix(in oklab, var(--bg) 85%, white 15%);
+      box-shadow: 0 2px 0 rgba(0,0,0,0.04);
+    }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 12px 20px 0; }
+
+    h1.title {
+      font-family: 'Jua', cursive;
+      font-size: clamp(28px, 4vw, 40px);
+      letter-spacing: 0.5px;
+      margin: 10px 4px 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    h1.title .emoji { font-size: 1.1em; }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 8px; padding: 8px; border-radius: var(--radius-lg);
+      background: var(--tab-bg);
+      box-shadow: var(--shadow);
+    }
+    .tab-btn {
+      appearance: none; border: 0; cursor: pointer; position: relative;
+      padding: 12px 10px; border-radius: var(--radius-sm);
+      font-weight: 700; font-size: clamp(14px, 2.2vw, 16px);
+      background: #f8fafc; color: var(--text);
+      transition: transform var(--speed), background var(--speed), box-shadow var(--speed);
+      outline: none;
+    }
+    .tab-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.06); }
+    .tab-btn:focus-visible { box-shadow: 0 0 0 3px var(--tab-ring); }
+    .tab-btn[aria-selected="true"] {
+      background: color-mix(in oklab, var(--accent) 12%, #ffffff 88%);
+      color: #0b4b3f;
+      box-shadow: inset 0 0 0 2px var(--accent);
+    }
+
+    /* 활성 탭 인디케이터 (애니메이션) */
+    .indicator {
+      position: relative; height: 4px; margin-top: 8px; border-radius: 999px; background: #e5e7eb;
+    }
+    .indicator::after {
+      content: ""; position: absolute; top: 0; left: 0; height: 100%; width: 12.5%;
+      border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: transform var(--speed) ease;
+      transform: translateX(0%);
+    }
+
+    main { max-width: 1200px; margin: 20px auto; padding: 0 20px 28px; }
+
+    /* 섹션 카드 래퍼 */
+    .era-section {
+      margin: 16px 0 24px; padding: 18px; border-radius: var(--radius-lg);
+      background: #ffffff; box-shadow: var(--shadow);
+      border: 2px solid transparent; transition: border-color var(--speed), background var(--speed);
+      opacity: 1; transform: translateY(0); transition-property: border-color, background, opacity, transform;
+    }
+    .era-section.hidden { display: none; }
+
+    .era-section.active {
+      background: var(--section-highlight);
+      border-color: var(--accent-2);
+    }
+
+    .era-title {
+      font-family: 'Jua', cursive;
+      font-size: clamp(22px, 3vw, 30px);
+      margin: 6px 4px 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .era-title .chip {
+      font-size: 14px; font-weight: 800; color: white; background: var(--accent-2);
+      padding: 4px 10px; border-radius: 999px;
+    }
+
+    /* 영상 카드 그리드 */
+    .grid {
+      display: grid; gap: 14px; 
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+    .card {
+      background: var(--card); border-radius: var(--radius-sm);
+      overflow: hidden; box-shadow: var(--shadow); transition: transform var(--speed), box-shadow var(--speed);
+    }
+    .card:hover { transform: translateY(-4px) scale(1.01); box-shadow: 0 16px 30px rgba(0,0,0,0.12); }
+
+    .thumb { position: relative; aspect-ratio: 16/9; background: #f1f5f9; display: grid; place-items: center; overflow: hidden; }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .play {
+      position: absolute; width: 58px; height: 58px; border-radius: 50%;
+      background: white; display: grid; place-items: center; box-shadow: 0 8px 22px rgba(0,0,0,0.18);
+      transition: transform var(--speed), background var(--speed);
+    }
+    .card:hover .play { transform: scale(1.08); background: #fef3c7; }
+    .play::before {
+      content: ""; border-style: solid; border-width: 10px 0 10px 16px; border-color: transparent transparent transparent #ef4444;
+      margin-left: 4px;
+    }
+
+    .meta { padding: 10px 12px 14px; }
+    .meta h3 { font-size: 18px; margin: 6px 0 4px; }
+    .meta p { font-size: 14px; color: var(--muted); margin: 0; }
+
+    /* 접근성: 스킵 링크 */
+    .skip-link { position: absolute; left: -9999px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+    .skip-link:focus { left: 16px; top: 16px; width: auto; height: auto; padding: 8px 12px; background: #111827; color: white; border-radius: 8px; }
+
+    /* 작은 화면 최적화 */
+    @media (max-width: 560px) {
+      .tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .indicator::after { width: 25%; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#content" class="skip-link">본문으로 건너뛰기</a>
+  <header>
+    <div class="wrap">
+      <h1 class="title"><span class="emoji">🎒</span> 초등 한국사 시대별 유튜브</h1>
+      <div class="tabs" role="tablist" aria-label="시대별 탭">
+        <button class="tab-btn" role="tab" aria-selected="true" data-era="all" title="전체 보기">전체</button>
+        <button class="tab-btn" role="tab" data-era="prehistoric">선사</button>
+        <button class="tab-btn" role="tab" data-era="goguryeo">삼국</button>
+        <button class="tab-btn" role="tab" data-era="unified-silla">통일신라</button>
+        <button class="tab-btn" role="tab" data-era="goryeo">고려</button>
+        <button class="tab-btn" role="tab" data-era="joseon">조선</button>
+        <button class="tab-btn" role="tab" data-era="modern">근현대</button>
+        <button class="tab-btn" role="tab" data-era="extras">보충</button>
+      </div>
+      <div class="indicator" aria-hidden="true"></div>
+    </div>
+  </header>
+
+  <main id="content" class="wrap" tabindex="-1">
+
+    <!-- 각 섹션: 실제로는 필요 수 만큼 복제하고 카드만 추가/수정하세요 -->
+    <section class="era-section active" data-era="prehistoric">
+      <h2 class="era-title">🪨 선사 시대 <span class="chip">기초</span></h2>
+      <div class="grid">
+        <!-- 썸네일은 자유롭게 교체하세요. a 태그 href에 유튜브 링크를 넣으면 됩니다. -->
+        <a class="card" href="https://www.youtube.com/watch?v=5MgBikgcWnY" target="_blank" rel="noopener noreferrer">
+          <div class="thumb">
+            <img src="https://i.ytimg.com/vi/5MgBikgcWnY/hqdefault.jpg" alt="선사 시대 개요 영상 썸네일" />
+            <span class="play" aria-hidden="true"></span>
+          </div>
+          <div class="meta">
+            <h3>선사 시대가 뭐예요?</h3>
+            <p>구석기 · 신석기 · 청동기 · 철기</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="era-section" data-era="goguryeo">
+      <h2 class="era-title">🛡️ 삼국 시대 <span class="chip" style="background: var(--accent-3)">인기</span></h2>
+      <div class="grid">
+        <a class="card" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener noreferrer">
+          <div class="thumb">
+            <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" alt="삼국 시대 개요 영상 썸네일" />
+            <span class="play" aria-hidden="true"></span>
+          </div>
+          <div class="meta">
+            <h3>삼국이 어떻게 생겼나요?</h3>
+            <p>고구려 · 백제 · 신라</p>
+          </div>
+        </a>
+        <!-- 지니키즈(예시) - 실제 채널 영상 ID로 바꿔 넣으세요. -->
+        <a class="card" href="https://www.youtube.com/watch?v=QH2-TGUlwu4" target="_blank" rel="noopener noreferrer">
+          <div class="thumb">
+            <img src="https://i.ytimg.com/vi/QH2-TGUlwu4/hqdefault.jpg" alt="지니키즈 삼국시대 영상 썸네일(예시)" />
+            <span class="play" aria-hidden="true"></span>
+          </div>
+          <div class="meta">
+            <h3>지니키즈: 삼국시대 탐험</h3>
+            <p>초등 맞춤 요약</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="era-section" data-era="unified-silla">
+      <h2 class="era-title">🌀 통일 신라 <span class="chip">문화</span></h2>
+      <div class="grid">
+        <a class="card" href="https://www.youtube.com/watch?v=3GwjfUFyY6M" target="_blank" rel="noopener noreferrer">
+          <div class="thumb">
+            <img src="https://i.ytimg.com/vi/3GwjfUFyY6M/hqdefault.jpg" alt="통일 신라 영상 썸네일" />
+            <span class="play" aria-hidden="true"></span>
+          </div>
+          <div class="meta">
+            <h3>통일 신라 한눈에 보기</h3>
+            <p>불교 · 신라 문화재</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="era-section" data-era="goryeo">
+      <h2 class="era-title">🧿 고려 시대 <span class="chip">핵심</span></h2>
+      <div class="grid">
+        <a class="card" href="https://www.youtube.com/watch?v=oHg5SJYRHA0" target="_blank" rel="noopener noreferrer">
+          <div class="thumb">
+            <img src="https://i.ytimg.com/vi/oHg5SJYRHA0/hqdefault.jpg" alt="고려 영상 썸네일" />
+            <span class="play" aria-hidden="true"></span>
+          </div>
+          <div class="meta">
+            <h3>고려는 어떤 나라였나요?</h3>
+            <p>청자 · 금속활자</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="era-section" data-era="joseon">
+      <h2 class="era-title">📜 조선 시대 <span class="chip">중요</span></h2>
+      <div class="grid">
+        <a class="card" href="https://www.youtube.com/watch?v=DLzxrzFCyOs" target="_blank" rel="noopener noreferrer">
+          <div class="thumb">
+            <img src="https://i.ytimg.com/vi/DLzxrzFCyOs/hqdefault.jpg" alt="조선 영상 썸네일" />
+            <span class="play" aria-hidden="true"></span>
+          </div>
+          <div class="meta">
+            <h3>세종 대왕과 훈민정음</h3>
+            <p>과학 · 문화의 융성</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="era-section" data-era="modern">
+      <h2 class="era-title">🚂 근현대사 <span class="chip">연결</span></h2>
+      <div class="grid">
+        <a class="card" href="https://www.youtube.com/watch?v=kJQP7kiw5Fk" target="_blank" rel="noopener noreferrer">
+          <div class="thumb">
+            <img src="https://i.ytimg.com/vi/kJQP7kiw5Fk/hqdefault.jpg" alt="근현대사 영상 썸네일" />
+            <span class="play" aria-hidden="true"></span>
+          </div>
+          <div class="meta">
+            <h3>대한민국의 탄생</h3>
+            <p>일제 강점기 · 광복</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="era-section" data-era="extras">
+      <h2 class="era-title">✨ 보충 학습 <span class="chip" style="background: var(--accent)">확장</span></h2>
+      <div class="grid">
+        <a class="card" href="https://www.youtube.com/watch?v=fJ9rUzIMcZQ" target="_blank" rel="noopener noreferrer">
+          <div class="thumb">
+            <img src="https://i.ytimg.com/vi/fJ9rUzIMcZQ/hqdefault.jpg" alt="역사 보충 학습 영상 썸네일" />
+            <span class="play" aria-hidden="true"></span>
+          </div>
+          <div class="meta">
+            <h3>문화재를 지켜요</h3>
+            <p>현장 체험 · 박물관</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // 탭 & 섹션 필터링 로직
+    const tabButtons = Array.from(document.querySelectorAll('.tab-btn'));
+    const sections = Array.from(document.querySelectorAll('.era-section'));
+    const indicator = document.querySelector('.indicator::after'); // not directly selectable
+    const indicatorBar = document.querySelector('.indicator');
+
+    // 인디케이터 이동 함수: nth 인덱스 기준으로 translateX% 변경
+    function moveIndicatorTo(index) {
+      const after = indicatorBar; // we will set CSS var instead
+      const columns = getComputedStyle(document.querySelector('.tabs')).gridTemplateColumns.split(' ').length;
+      const widthPercent = (window.matchMedia('(max-width: 560px)').matches ? 25 : 12.5); // 4 or 8 columns
+      const x = index * widthPercent;
+      // CSSStyleSheet 접근 대신 data-속성으로 전달하고 CSS 변수를 업데이트
+      indicatorBar.style.setProperty('--x', x + '%');
+      // 동적으로 ::after에 적용: CSSOM 사용이 어려워 변수 기반으로 구현
+    }
+
+    // ::after용 스타일 변수를 주입
+    const style = document.createElement('style');
+    style.innerHTML = `.indicator::after{ transform: translateX(var(--x, 0%)); }`;
+    document.head.appendChild(style);
+
+    function setActiveEra(era) {
+      // 탭 상태 업데이트
+      tabButtons.forEach((btn, idx) => {
+        const selected = btn.dataset.era === era || (era === 'all' && btn.dataset.era === 'all');
+        btn.setAttribute('aria-selected', selected ? 'true' : 'false');
+        if (selected) moveIndicatorTo(idx);
+      });
+
+      // 섹션 표시/숨김 + 하이라이트
+      sections.forEach(sec => {
+        if (era === 'all' || sec.dataset.era === era) {
+          sec.classList.remove('hidden');
+          // 약한 등장 애니메이션
+          sec.style.opacity = 0; sec.style.transform = 'translateY(8px)';
+          requestAnimationFrame(() => {
+            sec.classList.add('active');
+            sec.style.transition = 'opacity 360ms ease, transform 360ms ease, background var(--speed), border-color var(--speed)';
+            sec.style.opacity = 1; sec.style.transform = 'translateY(0)';
+          });
+        } else {
+          sec.classList.remove('active');
+          sec.classList.add('hidden');
+        }
+      });
+
+      // 스크린 리더에 현재 섹션 알림
+      const live = document.getElementById('live') || (() => {
+        const div = document.createElement('div');
+        div.id = 'live'; div.setAttribute('aria-live','polite'); div.className = 'sr-only';
+        Object.assign(div.style, { position:'absolute', left:'-9999px' });
+        document.body.appendChild(div); return div;
+      })();
+      live.textContent = era === 'all' ? '전체 섹션 보기' : `현재 ${eraLabel(era)} 섹션`;
+
+      // 상단으로 부드럽게 스크롤
+      window.scrollTo({ top: document.querySelector('header').offsetTop, behavior: 'smooth' });
+    }
+
+    function eraLabel(key){
+      return ({
+        all: '전체', prehistoric: '선사', goguryeo: '삼국', 'unified-silla': '통일신라', goryeo: '고려', joseon: '조선', modern: '근현대', extras: '보충'
+      })[key] || key;
+    }
+
+    tabButtons.forEach((btn, idx) => {
+      btn.addEventListener('click', () => setActiveEra(btn.dataset.era));
+      // 키보드 접근성
+      btn.addEventListener('keydown', (e) => {
+        const currentIndex = tabButtons.indexOf(document.querySelector('.tab-btn[aria-selected="true"]'));
+        if (e.key === 'ArrowRight') { e.preventDefault(); const n = (currentIndex + 1) % tabButtons.length; tabButtons[n].focus(); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); const p = (currentIndex - 1 + tabButtons.length) % tabButtons.length; tabButtons[p].focus(); }
+        if (e.key === 'Home') { e.preventDefault(); tabButtons[0].focus(); }
+        if (e.key === 'End') { e.preventDefault(); tabButtons[tabButtons.length - 1].focus(); }
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveEra(btn.dataset.era); }
+      });
+    });
+
+    // 초기 인디케이터 위치 세팅
+    moveIndicatorTo(0);
+
+    // 반응형 그리드 변화에 따라 인디케이터 폭 재계산
+    window.addEventListener('resize', () => {
+      const activeIdx = tabButtons.findIndex(b => b.getAttribute('aria-selected') === 'true');
+      moveIndicatorTo(Math.max(0, activeIdx));
+    });
+  </script>
+</body>
+</html>
