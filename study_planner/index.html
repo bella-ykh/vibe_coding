@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나의 학습 플래너</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1 id="current-date-header">2025년 10월 17일 금요일</h1>
+    </header>
+
+    <main class="container">
+        <section class="task-view">
+            <h2 id="task-view-title">오늘의 할일 (10월 17일)</h2>
+            
+            <div class="task-input-box">
+                <select id="task-category">
+                    <option value="homework"> 숙제 📚</option>
+                    <option value="appointment"> 약속 🤝</option>
+                    <option value="supplies"> 준비물 📎</option>
+                    <option value="schedule"> 일정 📅</option>
+                </select>
+                <input type="text" id="task-input" placeholder="새로운 할 일을 입력하세요...">
+                <button id="add-task-btn">추가</button>
+            </div>
+
+            <ul id="task-list">
+                </ul>
+        </section>
+
+        <div class="schedule-container">
+            <section class="weekly-view">
+                <h2>주간 스케줄</h2>
+                <div id="weekly-schedule-grid">
+                    </div>
+            </section>
+
+            <section class="monthly-view">
+                <div class="calendar-header">
+                    <button id="prev-month-btn">◀</button>
+                    <h2 id="calendar-month-year">2025년 10월</h2>
+                    <button id="next-month-btn">▶</button>
+                </div>
+                <div class="calendar-days-header">
+                    <div>일</div>
+                    <div>월</div>
+                    <div>화</div>
+                    <div>수</div>
+                    <div>목</div>
+                    <div>금</div>
+                    <div>토</div>
+                </div>
+                <div id="calendar-grid">
+                    </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

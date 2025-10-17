@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>학습 플래너</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <h1>학습 플래너</h1>
+      <p id="todayLabel" class="sub">오늘: <span id="todayText"></span></p>
+    </div>
+    <div class="header-right">
+      <button id="goTodayBtn" class="btn ghost">오늘로 이동</button>
+      <div class="date-switcher">
+        <button id="prevMonth" class="btn icon" aria-label="이전 달">‹</button>
+        <span id="currentMonthLabel"></span>
+        <button id="nextMonth" class="btn icon" aria-label="다음 달">›</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <section class="today-section">
+      <div class="today-header">
+        <h2 id="todoTitle">오늘의 할일</h2>
+        <div class="date-picker">
+          <input type="date" id="dateInput" aria-label="선택 날짜" />
+          <button id="selectDateBtn" class="btn">날짜 불러오기</button>
+        </div>
+      </div>
+
+      <form id="taskForm" class="task-form">
+        <label for="category" class="sr-only">카테고리</label>
+        <select id="category" required>
+          <option value="homework">숙제 📘</option>
+          <option value="appointment">약속 🤝</option>
+          <option value="supplies">준비물 🧰</option>
+          <option value="schedule">일정 🗓️</option>
+        </select>
+
+        <label for="taskInput" class="sr-only">할 일 입력</label>
+        <input id="taskInput" type="text" placeholder="할 일을 입력하세요 (예: 수학 문제 2쪽 풀기)" required />
+
+        <label for="timeInput" class="sr-only">시간</label>
+        <input id="timeInput" type="time" />
+
+        <button type="submit" class="btn primary">추가</button>
+      </form>
+
+      <ul id="taskList" class="task-list" aria-live="polite"></ul>
+    </section>
+
+    <section class="grid-bottom">
+      <div class="weekly-panel card">
+        <div class="panel-header">
+          <h3>주간 스케줄</h3>
+          <span id="weekRange" class="muted"></span>
+        </div>
+        <div id="weeklyGrid" class="weekly-grid"></div>
+      </div>
+
+      <div class="monthly-panel card">
+        <div class="panel-header">
+          <h3>월간 스케줄</h3>
+          <span class="muted">달력에서 날짜를 눌러 이동</span>
+        </div>
+        <div class="calendar">
+          <div class="calendar-header calendar-row">
+            <div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div class="weekend">토</div><div class="weekend">일</div>
+          </div>
+          <div id="calendarBody" class="calendar-body"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <small>© <span id="year"></span> 학습 플래너 • 로컬 저장(오프라인) + 선택적으로 Supabase 연동 가능</small>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

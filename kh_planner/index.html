@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>숙제 일지 - 강희</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="date-wrap">
+        <div class="today-wrap">
+            <span id="todayDate" class="date"></span>
+            <span id="todayWeekday" class="weekday"></span>
+        </div>
+      <button id="openMonth" class="btn outline month-btn" type="button">이번달 보기</button>
+    </div>
+    <h1>오늘 강희가 해야 할 일이야</h1>
+  </header>
+
+  <main class="container">
+    <!-- 입력 폼 -->
+    <section class="card add-form" aria-labelledby="addFormTitle">
+      <h2 id="addFormTitle" class="sr-only">할 일 추가</h2>
+      <form id="taskForm" autocomplete="off">
+        <input id="taskInput" type="text" placeholder="오늘의 할 일을 적어 보세요~" />
+        <button type="submit" class="btn primary">추가</button>
+      </form>
+
+      <!-- 자주 쓰는 메뉴 -->
+      <div class="quick-add">
+        <p class="quick-title">자주 쓰는 메뉴</p>
+        <div class="quick-grid" role="list">
+          <button class="chip" data-text="수학 학원 숙제">수학 학원 숙제</button>
+          <button class="chip" data-text="영어 학원 숙제">영어 학원 숙제</button>
+          <button class="chip" data-text="씽크빅-독해">씽크빅-독해</button>
+          <button class="chip" data-text="씽크빅-수학">씽크빅-수학</button>
+          <button class="chip" data-text="씽크빅-연산">씽크빅-연산</button>
+          <button class="chip" data-text="논술 학원 숙제">논술 학원 숙제</button>
+          <button class="chip" data-text="하루쓰기">하루쓰기</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 할 일 리스트 -->
+    <section class="card task-list" aria-labelledby="taskListTitle">
+      <h2 id="taskListTitle">오늘의 할 일</h2>
+      <ul id="taskUl" class="tasks" aria-live="polite"></ul>
+      <div class="summary">
+        <span id="taskCount">0개</span> 중 <span id="doneCount">0개</span> 완료
+      </div>
+    </section>
+
+    <!-- 주간 평가 섹션 -->
+    <section class="card weekly" aria-labelledby="weeklyTitle">
+      <h2 id="weeklyTitle"><span id="weekRange">2025.10.13 ~ 2025.10.19</span> 주간 평가</h2>
+      <div class="week-grid" id="weekGrid" aria-label="월요일부터 일요일까지 주간 평가"></div>
+    </section>
+  </main>
+
+  <!-- 완료 축하 모달 -->
+  <div id="congratsOverlay" class="overlay" hidden>
+    <div class="modal" role="dialog" aria-labelledby="congratsTitle" aria-modal="true">
+      <h3 id="congratsTitle">오늘 하루도 수고했어~ 강희야! 🥳</h3>
+      <p>모든 할 일을 끝냈어. 정말 대단해!</p>
+      <button id="closeCongrats" class="btn primary">닫기</button>
+    </div>
+  </div>
+
+  <!-- 월간 달력 모달 -->
+  <div id="monthOverlay" class="overlay" hidden>
+    <div class="modal calendar-modal" role="dialog" aria-labelledby="monthTitle" aria-modal="true">
+      <div class="cal-header">
+        <h3 id="monthTitle">2025.10 월간 평가</h3>
+        <div class="cal-nav">
+          <button id="prevMonth" class="btn outline sm" type="button">이전</button>
+          <button id="nextMonth" class="btn outline sm" type="button">다음</button>
+          <button id="closeMonth" class="btn" type="button">닫기</button>
+        </div>
+      </div>
+      <div class="cal-weekdays">
+        <span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span><span>일</span>
+      </div>
+      <div id="calGrid" class="cal-grid" aria-label="월간 평가 달력"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

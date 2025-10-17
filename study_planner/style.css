@@ -1,0 +1,260 @@
+/* 기본 & 레이아웃 */
+:root {
+    --primary-color: #4a90e2;
+    --secondary-color: #f5f5f5;
+    --border-color: #ddd;
+    --today-highlight: #fffde7;
+    --selected-highlight: #e3f2fd;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", helvetica, "Apple SD Gothic Neo", sans-serif;
+    background-color: var(--secondary-color);
+    color: #333;
+    line-height: 1.6;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1.2rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.container {
+    max-width: 1400px;
+    margin: 1.5rem auto;
+    padding: 1rem;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 1.5rem;
+}
+
+.schedule-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+h2 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+/* 오늘의 할 일 (Task View) */
+.task-input-box {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+#task-input {
+    flex-grow: 1;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+#task-category {
+    padding: 0.75rem 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: white;
+}
+
+#add-task-btn {
+    padding: 0.75rem 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+#add-task-btn:hover {
+    background-color: #357abd;
+}
+
+#task-list {
+    list-style: none;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#task-list li {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+#task-list li:last-child {
+    border-bottom: none;
+}
+
+#task-list input[type="checkbox"] {
+    margin-right: 1rem;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+#task-list .task-text {
+    flex-grow: 1;
+    font-size: 1.05rem;
+}
+
+#task-list .task-category-badge {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    color: white;
+    margin-left: 1rem;
+}
+
+/* 카테고리별 뱃지 색상 */
+.badge-homework { background-color: #f44336; }
+.badge-appointment { background-color: #4caf50; }
+.badge-supplies { background-color: #ff9800; }
+.badge-schedule { background-color: #2196f3; }
+
+/* 완료된 할 일 (직관적 디자인) */
+#task-list li.completed .task-text {
+    text-decoration: line-through;
+    color: #999;
+    opacity: 0.7;
+}
+
+/* 월간 스케줄 (Monthly Calendar) */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.calendar-header button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+.calendar-header h2 {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.calendar-days-header,
+#calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+}
+
+.calendar-days-header div {
+    font-weight: bold;
+    padding: 0.5rem 0;
+}
+
+#calendar-grid .date-cell {
+    padding: 0.8rem 0.5rem;
+    min-height: 80px;
+    border: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 0.9rem;
+}
+
+#calendar-grid .date-cell:hover {
+    background-color: #f9f9f9;
+}
+
+#calendar-grid .other-month {
+    color: #ccc;
+    background-color: #fafafa;
+}
+
+/* 오늘 날짜 & 선택된 날짜 강조 */
+#calendar-grid .today {
+    background-color: var(--today-highlight);
+    font-weight: bold;
+}
+
+#calendar-grid .selected {
+    background-color: var(--selected-highlight);
+    border: 1px solid var(--primary-color);
+}
+
+/* 달력에 할 일 아이콘 표시 */
+.task-indicators {
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px;
+}
+
+/* 주간 스케줄 (Weekly View) */
+#weekly-schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.week-day-column {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.5rem;
+    min-height: 200px;
+    background: #fdfdfd;
+}
+
+.week-day-header {
+    font-weight: bold;
+    text-align: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 0.5rem;
+}
+
+/* 주간 스케줄 오늘 날짜 강조 */
+.week-day-column.today {
+    background-color: var(--today-highlight);
+}
+
+.week-task-list {
+    font-size: 0.85rem;
+    list-style: none;
+}
+
+.week-task-list li {
+    padding: 0.2rem;
+    background-color: white;
+    border: 1px solid #eee;
+    border-radius: 3px;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
